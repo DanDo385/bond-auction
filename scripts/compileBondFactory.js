@@ -28,28 +28,14 @@ const input = {
 
 // Define the import callback
 function findImports(importPath) {
-    if (importPath.startsWith('@openzeppelin')) {
-        // Adjusted path for OpenZeppelin contracts
-        const filePath = path.join(__dirname, '..', 'node_modules', importPath);
-        try {
-            return { contents: fs.readFileSync(filePath, 'utf8') };
-        } catch (e) {
-            return { error: 'File not found: ' + filePath };
-        }
-    } else if (importPath.startsWith('@chainlink')) {
-        // Presumed path for Chainlink contracts, adjust as necessary
-        const filePath = path.join(__dirname, '..', 'node_modules', '@chainlink', 'contracts', 'src', 'v0.8', importPath.split('/').slice(2).join('/'));
-        try {
-            return { contents: fs.readFileSync(filePath, 'utf8') };
-        } catch (e) {
-            return { error: 'File not found: ' + filePath };
-        }
-    } else {
-        return { error: 'File not found' };
+    const nodeModulesPath = path.join(nodeModulesDir, importPath);
+    try {
+        const fileContents = fs.readFileSync(nodeModulesPath, 'utf8');
+        return { contents: fileContents };
+    } catch (e) {
+        return { error: 'File not found: ' + nodeModulesPath };
     }
 }
-
-
 
 // Compile the contract with the import callback
 let output;

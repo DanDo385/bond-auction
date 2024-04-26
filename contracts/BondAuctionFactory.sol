@@ -3,7 +3,8 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBase.sol";
+
 
 contract BondAuctionFactory is ERC721, ERC721URIStorage, VRFConsumerBase {
     uint256 public fee;
@@ -31,6 +32,11 @@ contract BondAuctionFactory is ERC721, ERC721URIStorage, VRFConsumerBase {
         fee = _fee;
         tokenCounter = 0;
     }
+
+    function _exists(uint256 tokenId) internal view returns (bool) {
+    return _exists(tokenId);
+    }
+
 
     function createBond(uint256 _couponRate, uint256 _maturity) external returns (uint256 tokenId) {
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay fee");
