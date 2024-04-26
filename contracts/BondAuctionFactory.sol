@@ -50,7 +50,7 @@ contract BondAuctionFactory is ERC721, ERC721URIStorage, VRFConsumerBase {
     function requestRandomPrice(uint256 tokenId) public {
         require(msg.sender == ownerOf(tokenId), "Caller is not the bond owner");
         require(!bonds[tokenId].isMinted, "Bond is already minted");
-        requestRandomness(keyHash, fee, tokenId);
+        requestRandomness(keyHash, fee);
     }
 
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
