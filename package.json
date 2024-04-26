@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chainlink/contracts": "^1.1.0",
     "@openzeppelin/contracts": "^5.0.2",
     "ethers": "^5.7.2",
     "next": "14.2.3",

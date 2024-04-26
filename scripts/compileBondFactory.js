@@ -28,13 +28,19 @@ const input = {
 
 // Define the import callback
 function findImports(importPath) {
-    if (importPath.startsWith('@openzeppelin') || importPath.startsWith('@chainlink')) {
-        const packagePath = importPath.startsWith('@openzeppelin') ? 
-                            'openzeppelin-contracts' : 'chainlink/contracts';
-        const filePath = path.join(nodeModulesDir, packagePath, importPath.split('/').slice(1).join('/'));
+    if (importPath.startsWith('@openzeppelin')) {
+        // Adjusted path for OpenZeppelin contracts
+        const filePath = path.join(__dirname, '..', 'node_modules', importPath);
         try {
-            const fileContents = fs.readFileSync(filePath, 'utf8');
-            return { contents: fileContents };
+            return { contents: fs.readFileSync(filePath, 'utf8') };
+        } catch (e) {
+            return { error: 'File not found: ' + filePath };
+        }
+    } else if (importPath.startsWith('@chainlink')) {
+        // Presumed path for Chainlink contracts, adjust as necessary
+        const filePath = path.join(__dirname, '..', 'node_modules', '@chainlink', 'contracts', 'src', 'v0.8', importPath.split('/').slice(2).join('/'));
+        try {
+            return { contents: fs.readFileSync(filePath, 'utf8') };
         } catch (e) {
             return { error: 'File not found: ' + filePath };
         }
@@ -42,6 +48,7 @@ function findImports(importPath) {
         return { error: 'File not found' };
     }
 }
+
 
 
 // Compile the contract with the import callback
