@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBase.sol";
-
 
 contract BondAuctionFactory is ERC721, ERC721URIStorage, VRFConsumerBase {
     uint256 public fee;
@@ -34,9 +33,12 @@ contract BondAuctionFactory is ERC721, ERC721URIStorage, VRFConsumerBase {
     }
 
     function _exists(uint256 tokenId) internal view returns (bool) {
-    return _exists(tokenId);
+        return _exists(tokenId);
     }
 
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+        return ERC721.supportsInterface(interfaceId) || ERC721URIStorage.supportsInterface(interfaceId);
+    }
 
     function createBond(uint256 _couponRate, uint256 _maturity) external returns (uint256 tokenId) {
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay fee");
