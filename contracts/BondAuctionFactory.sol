@@ -72,8 +72,4 @@ contract BondAuctionFactory is ERC721, ERC721URIStorage, VRFConsumerBase {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
         return super.tokenURI(tokenId);
     }
-
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721) returns (bool) {
-        return super.supportsInterface(interfaceId);
-    }
 }
