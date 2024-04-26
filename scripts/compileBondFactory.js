@@ -28,13 +28,21 @@ const input = {
 
 // Define the import callback
 function findImports(importPath) {
-    if (importPath.startsWith('@openzeppelin')) {
-        const filePath = path.join(nodeModulesDir, importPath);
-        return { contents: fs.readFileSync(filePath, 'utf8') };
+    if (importPath.startsWith('@openzeppelin') || importPath.startsWith('@chainlink')) {
+        const packagePath = importPath.startsWith('@openzeppelin') ? 
+                            'openzeppelin-contracts' : 'chainlink/contracts';
+        const filePath = path.join(nodeModulesDir, packagePath, importPath.split('/').slice(1).join('/'));
+        try {
+            const fileContents = fs.readFileSync(filePath, 'utf8');
+            return { contents: fileContents };
+        } catch (e) {
+            return { error: 'File not found: ' + filePath };
+        }
     } else {
         return { error: 'File not found' };
     }
 }
+
 
 // Compile the contract with the import callback
 let output;
