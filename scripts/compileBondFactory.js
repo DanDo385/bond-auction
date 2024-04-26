@@ -1,4 +1,3 @@
-// scripts/compileBondFactory.js
 const path = require('path');
 const fs = require('fs');
 const solc = require('solc');
@@ -6,6 +5,7 @@ const solc = require('solc');
 const contractFile = 'BondAuctionFactory.sol';
 const contractsDir = path.resolve(__dirname, '..', 'contracts');
 const buildDir = path.resolve(__dirname, '..', 'build');
+const nodeModulesDir = path.resolve(__dirname, '..', 'node_modules');
 
 const contractPath = path.resolve(contractsDir, contractFile);
 const source = fs.readFileSync(contractPath, 'utf8');
@@ -26,14 +26,26 @@ const input = {
     }
 };
 
+// Define the import callback
+function findImports(importPath) {
+    if (importPath.startsWith('@openzeppelin')) {
+        const filePath = path.join(nodeModulesDir, importPath);
+        return { contents: fs.readFileSync(filePath, 'utf8') };
+    } else {
+        return { error: 'File not found' };
+    }
+}
+
+// Compile the contract with the import callback
 let output;
 try {
-    output = JSON.parse(solc.compile(JSON.stringify(input)));
+    output = JSON.parse(solc.compile(JSON.stringify(input), { import: findImports }));
 } catch (err) {
     console.error('Compilation error:', err);
     return;
 }
 
+// Check for and handle compilation errors
 if (output.errors) {
     output.errors.forEach(err => {
         console.error(err.formattedMessage);
@@ -43,10 +55,12 @@ if (output.errors) {
     });
 }
 
+// Ensure the build directory exists
 if (!fs.existsSync(buildDir)) {
     fs.mkdirSync(buildDir);
 }
 
+// Process output for each contract
 if (output.contracts) {
     for (let contractName in output.contracts[contractFile]) {
         const contract = output.contracts[contractFile][contractName];
