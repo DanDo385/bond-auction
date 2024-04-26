@@ -3,8 +3,9 @@ const fs = require('fs');
 const solc = require('solc');
 
 const contractFile = 'BondAuctionFactory.sol';
-const contractsDir = path.resolve(__dirname, 'contracts');
-const buildDir = path.resolve(__dirname, 'build');
+// Update the path to go up one directory from scripts to the root, then to the contracts folder
+const contractsDir = path.resolve(__dirname, '..', 'contracts');
+const buildDir = path.resolve(__dirname, '..', 'build');
 
 const contractPath = path.resolve(contractsDir, contractFile);
 const source = fs.readFileSync(contractPath, 'utf8');
